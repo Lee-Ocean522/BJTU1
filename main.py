@@ -60,10 +60,10 @@ for cnt in filtered_contours:
 
     mean_h = cv2.mean(img_h, mask=mask_cnt)[0]
 
-    if 90 <= mean_h <= 130:  #blue
+    if 90 <= mean_h <= 130:
         color = (255, 0, 0)
         color_name = "Blue"
-    else:  #red
+    else:
         color = (0, 0, 255)
         color_name = "Red"
 
@@ -72,22 +72,13 @@ for cnt in filtered_contours:
     left = tuple(cnt[cnt[:, :, 0].argmin()][0])
     right = tuple(cnt[cnt[:, :, 0].argmax()][0])
 
-    cv2.circle(processed_img, center, 5, color, -1)  # 中心点
-    cv2.circle(processed_img, left, 3, color, -1)  # 左端点
-    cv2.circle(processed_img, right, 3, color, -1)  # 右端点
+    cv2.circle(processed_img, center, 5, color, -1)
+    cv2.circle(processed_img, left, 3, color, -1)
+    cv2.circle(processed_img, right, 3, color, -1)
 
-    cv2.putText(processed_img, color_name,
-                (center[0] + 10, center[1]),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
-matched_pairs = match_rectangles(filtered_contours)
-
-for box1, box2 in matched_pairs:
-    for i in range(4):
-        cv2.line(processed_img,
-                 tuple(box1[i]),
-                 tuple(box2[i]),
-                 (0, 255, 0), 2)
+    box = cv2.boxPoints(rect)
+    box = np.int32(box)
+    cv2.drawContours(processed_img, [box], 0, color, 2)  # 绘制矩形
 
 cv2.imshow('Detection Result', processed_img)
 cv2.waitKey(0)
